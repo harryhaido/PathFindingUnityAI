@@ -1,50 +1,78 @@
-# Self-Driving
-Using Unity and C#, we implemented basic neural network concepts, removing the idea of back propogation and using genetic algorithms to give the cars the ability of reinforced learning. Cars will learn, over time, what the best path is based on cars with the best genes. 
+# Path Finding
+Using Unity and C#, we implemented a simple chasing situation, which includes players and multiple enemies that chase the the player. By using Navmes, all the agents can learn and find the best path to go to the target.
 
 Click this YouTube link to see the simulation run in Unity. 
-https://www.youtube.com/watch?v=MLyCb2UqR68
+...
 
 # Simulations (for those who do not want to use Unity)
 
-**Figure 1.1: The Agent Model, an asset from the standard asset store in Unity**
-![Agent Model](https://i.gyazo.com/64e093d86157af72663637ab08533abb.png)
+**Figure 1.1.1: The Agent Model**
+![image](https://github.com/harryhaido/PathFindingUnityAI/assets/114239084/6d6c3656-9670-46d5-9d1e-be9e388d8322)
+**Figure 1.1.2: Testing the agent in different maps**
+![image](https://github.com/harryhaido/PathFindingUnityAI/assets/114239084/0e74852c-1ada-465b-ad14-423455985d01)
 
 **Figure 1.2: The Simulation**
-![Image of Simulation](https://i.gyazo.com/0a4169d1ef3dd36e93d83674e5648251.png)
+![image](https://github.com/harryhaido/PathFindingUnityAI/assets/114239084/3393d0f5-8497-4714-8b54-b5dacba6c2cb)
 
 **Figure 1.3: In Action** <br/>
-![gif](https://media.giphy.com/media/PhfJjvZ9c9mR3ztHkk/giphy.gif)
+https://github.com/harryhaido/PathFindingUnityAI/assets/114239084/0a364614-cde8-40c3-8c24-a6d3ef9029c9
 
 # Implementation
-Cars are given randomly initialized DNA. In this simulation, the best cars are determined by how long they travel for (**fitness**). The two best cars' DNAs are crossed over and mutated
 
-Cars are able to move and rotate over time. A set of lasers are given to each car, which act as the sensors of the car. The distances between the car and the walls are computed from each laser, which is ultimately used as the inputs of the neural network. 
+The Player can move freely in the pre-build environment and the enemies will chase that player. Each enemy will have a different path when trying to chase the Player
+
 ```cpp
-void Update()
-    {
-        if(initialization) {
-            float[] inputs = GetComponent<Lasers>().getDistancesOfLasers();
+using UnityEngine;
+using UnityEngine.AI;
 
-            //we're going to feed the information into the neural network's input layer
-            neural_network.feedForward(inputs);
-            List<float> outputs = neural_network.get_outputs();
-            GetComponent<Moving_Car>().updateMovement(outputs);
-            distance = Vector3.Distance(transform.position, initialPoint);
+public class PlayerController : MonoBehaviour
+{
+
+    public Camera cam;
+
+    public NavMeshAgent agent;
+    void Start()
+    {
+        agent = gameObject.GetComponent<NavMeshAgent>();
+        cam = Camera.main;
+    }
+    // Update is called once per frame
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                agent.SetDestination(hit.point);
+            }
         }
     }
+}
 ```
-
-A special camera is implemented that keeps track of the best cars and focuses on them the whole time. 
 ```cpp
-if (Input.GetKeyDown(KeyCode.LeftControl)) {
-            List<GameObject> cars = GameObject.Find("car_controller").GetComponent<AIController>().getCars();
-            int index = cars.IndexOf(follow); 
-            if ( index == cars.Count - 1) {
-                index = 0;
-            } else {
-                index += 1;
-            }
 
-            Follow(cars[index]);
-        }
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class EnemyFollow : MonoBehaviour
+{
+    public UnityEngine.AI.NavMeshAgent enemy;
+    public Transform Player;
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        enemy.SetDestination(Player.position);
+    }
+}
+
 ```
