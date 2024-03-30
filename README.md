@@ -15,6 +15,7 @@ Click this YouTube link to see the simulation run in Unity.
 ![image](https://github.com/harryhaido/PathFindingUnityAI/assets/114239084/0e74852c-1ada-465b-ad14-423455985d01)
 
 **Figure 1.2: The Simulation**
+
 ![image](https://github.com/harryhaido/PathFindingUnityAI/assets/114239084/3393d0f5-8497-4714-8b54-b5dacba6c2cb)
 
 **Figure 1.3: In Action** <br/>
